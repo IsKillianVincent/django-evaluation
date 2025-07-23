@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block content %}
+  <h2>Mon profil</h2>
+
+  <p><strong>Nom d'utilisateur :</strong> {{ request.user.username }}</p>
+  <p><strong>Nom :</strong> {{ request.user.first_name }}</p>
+  <p><strong>Prénom :</strong> {{ request.user.last_name }}</p>
+  <p><strong>Email :</strong> {{ request.user.email }}</p>
+  <p><strong>Lieu de résidence :</strong> {{ request.user.location }}</p>
+  <p><strong>Téléphone :</strong> {{ request.user.phone }}</p>
+  <p><strong>Date de naissance :</strong> {{ request.user.birth_date }}</p>
+  <p><strong>Bio :</strong> {{ request.user.bio }}</p>
+  <p><strong>LinkedIn :</strong> <a href="{{ request.user.linkedin }}" target="_blank">{{ request.user.linkedin }}</a></p>
+  <p><strong>Site web :</strong> <a href="{{ request.user.website }}" target="_blank">{{ request.user.website }}</a></p>
+
+  {% if request.user.photo %}
+    <p><strong>Photo :</strong></p>
+    <img src="{{ request.user.photo.url }}" alt="Photo de profil" width="150">
+  {% endif %}
+
+  <hr>
+
+  <h3>Compétences</h3>
+  <ul>
+    {% for user_skill in request.user.user_skills.all %}
+      <li>{{ user_skill.skill.name }}</li>
+    {% empty %}
+      <li>Aucune compétence renseignée.</li>
+    {% endfor %}
+  </ul>
+
+  <h3>Langues</h3>
+  <ul>
+    {% for lang in request.user.user_languages.all %}
+      <li>{{ lang.language.name }} ({{ lang.level }})</li>
+    {% empty %}
+      <li>Aucune langue renseignée.</li>
+    {% endfor %}
+  </ul>
+
+  <h3>Expériences</h3>
+  <ul>
+    {% for exp in request.user.experiences.all %}
+      <li><strong>{{ exp.title }}</strong> chez {{ exp.company }} ({{ exp.start_date }} - {{ exp.end_date|default:"Présent" }})</li>
+    {% empty %}
+      <li>Aucune expérience renseignée.</li>
+    {% endfor %}
+  </ul>
+  
+  <hr>
+  <a href="{% url 'edit_profile' %}">Modifier</a>
+  <a href="{% url 'password_change' %}">Changer mon mot de passe</a>
+{% endblock %}

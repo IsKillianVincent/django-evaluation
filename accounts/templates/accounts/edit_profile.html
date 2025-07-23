@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block content %}
+  <h2>Modifier mon profil</h2>
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+
+     <img src="{{ request.user.photo.url }}" alt="Photo de profil" width="150">
+
+    <h3>Compétences</h3>
+    {% for skill in skills %}
+      <label>
+        <input type="checkbox" name="skills" value="{{ skill.id }}" {% if skill.id in user_skill_ids %}checked{% endif %}>
+        {{ skill.name }}
+      </label><br>
+    {% endfor %}
+
+    <h3>Langues</h3>
+    {% for language in languages %}
+    <div style="margin-bottom: 8px;">
+        <label>
+        <input type="checkbox" name="languages" value="{{ language.id }}"
+            {% if language.current_level %}checked{% endif %}>
+        {{ language.name }}
+        </label>
+        <select name="level_{{ language.id }}">
+        <option value="">-- Niveau --</option>
+        {% for code, label in language_levels %}
+            <option value="{{ code }}" {% if language.current_level == code %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+        </select>
+    </div>
+    {% endfor %}
+
+    <h3>Expériences</h3>
+    <a href="{% url 'add_experience' %}">+ Ajouter une expérience</a>
+    <ul>
+        {% for exp in request.user.experiences.all %}
+        <li>
+            <strong>{{ exp.title }}</strong> chez {{ exp.company }} ({{ exp.start_date }} - {{ exp.end_date|default:"Présent" }})
+            <a href="{% url 'delete_experience' exp.id %}" onclick="return confirm('Supprimer cette expérience ?')">Supprimer</a>
+            <p>{{ exp.description }}</p>
+        </li>
+        {% empty %}
+        <li>Aucune expérience renseignée.</li>
+        {% endfor %}
+    </ul>
+
+    <button type="submit">Enregistrer</button>
+  </form>
+{% endblock %}
