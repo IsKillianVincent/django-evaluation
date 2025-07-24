@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+  <h2>{{ job.title }}</h2>
+  <p><strong>Entreprise :</strong> {{ job.company.name }}</p>
+  <p><strong>Lieu :</strong> {{ job.location }}</p>
+  <p>{{ job.description }}</p>
+
+  {% if request.user.is_authenticated %}
+    <a href="{% url 'submit_application' job.id %}">Postuler à cette offre</a>
+  {% else %}
+    <p><a href="{% url 'login' %}">Connectez-vous</a> pour postuler.</p>
+  {% endif %}
+
+  <a href="{% url 'job_list' %}">← Retour aux offres</a>
+{% endblock %}

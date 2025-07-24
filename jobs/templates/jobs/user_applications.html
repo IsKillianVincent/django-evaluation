@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h2>Mes candidatures</h2>
+
+  {% if applications %}
+    <ul>
+      {% for app in applications %}
+        <li>
+          <strong>{{ app.job.title }}</strong> chez {{ app.job.company.name }}<br>
+          <em>Date :</em> {{ app.created_at|date:"d/m/Y H:i" }}<br>
+          <em>Statut :</em> {{ app.is_validated|yesno:"Validée,En attente" }}<br>
+          <em>Lettre :</em> {{ app.cover_letter|truncatewords:20 }}<br>
+          <em>CV :</em> <a href="{{ app.resume.url }}" target="_blank">Télécharger</a>
+        </li>
+        <hr>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>Vous n'avez pas encore déposé de candidature.</p>
+  {% endif %}
+{% endblock %}

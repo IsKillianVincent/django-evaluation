@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block content %}
+  <h2>Créer une entreprise</h2>
+
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ company_form.as_p }}
+
+    <h3>Images de l’entreprise (max 5)</h3>
+    {{ formset.management_form }}
+    {% for form in formset %}
+      <div class="image-upload">
+        {{ form.as_p }}
+      </div>
+    {% endfor %}
+
+    <button type="submit">Créer l’entreprise</button>
+  </form>
+{% endblock %}

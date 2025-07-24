@@ -6,7 +6,17 @@ from accounts.models import UserExperience
 class UserRegisterForm(UserCreationForm):
     class Meta:
         model = User
-        fields = ['username', 'email', 'photo', 'password1', 'password2']
+        fields = [
+            'username', 'email', 'first_name', 'last_name',
+            'location', 'birth_date', 'phone', 'bio',
+            'linkedin', 'website', 'photo',
+            'password1', 'password2'
+        ]
+        widgets = {
+            'birth_date': forms.DateInput(attrs={'type': 'date'}),
+            'bio': forms.Textarea(attrs={'rows': 3}),
+        }
+
 
 class UserLoginForm(AuthenticationForm):
     username = forms.CharField(label="Nom d'utilisateur")
@@ -15,7 +25,15 @@ class UserLoginForm(AuthenticationForm):
 class UserUpdateForm(forms.ModelForm):
     class Meta:
         model = User
-        fields = ['username', 'email', 'photo']
+        fields = [
+            'username', 'email', 'first_name', 'last_name',
+            'location', 'birth_date', 'phone', 'bio',
+            'linkedin', 'website', 'photo'
+        ]
+        widgets = {
+            'birth_date': forms.DateInput(attrs={'type': 'date'}),
+            'bio': forms.Textarea(attrs={'rows': 3}),
+        }
 
 class UserExperienceForm(forms.ModelForm):
     class Meta:

@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block content %}
+  <h2>Dashboard Employeur</h2>
+
+  {% if user.is_employer %}
+  {% if user.companies.exists %}
+    <a href="{% url 'create_job' %}">Crée une offre</a>
+  {% else %}
+    <a href="{% url 'create_company' %}">Crée votre entreprise pour publier des offres</a>
+  {% endif %}
+{% endif %}
+
+  {% if applications %}
+    {% for app in applications %}
+      <div class="application-entry">
+        <h3>{{ app.user.get_full_name }} a postulé à <em>{{ app.job.title }}</em></h3>
+        <p><strong>Date :</strong> {{ app.created_at|date:"d/m/Y H:i" }}</p>
+        <p><strong>Lettre de motivation :</strong><br>{{ app.cover_letter|linebreaks }}</p>
+        <p><strong>CV :</strong> <a href="{{ app.resume.url }}" target="_blank">Télécharger</a></p>
+        <p><strong>Statut :</strong> {{ app.is_validated|yesno:"Validée,En attente" }}</p>
+      </div>
+      <hr>
+    {% if app.is_validated %}
+        Validée
+        <a href="{% url 'invalidate_application' app.id %}" class="btn btn-sm btn-warning">Invalider</a>
+    {% else %}
+        En attente
+        <a href="{% url 'validate_application' app.id %}" class="btn btn-sm btn-success">Valider</a>
+  {% endif %}
+</p>
+    {% endfor %}
+  {% else %}
+    <p>Aucune candidature reçue pour l’instant.</p>
+  {% endif %}
+{% endblock %}

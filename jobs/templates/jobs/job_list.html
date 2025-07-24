@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+  <h2>Offres d'emploi disponibles</h2>
+
+  {% for job in jobs %}
+    <div class="job-card">
+      <h3><a href="{% url 'job_detail' job.pk %}">{{ job.title }}</a></h3>
+      <p><strong>Entreprise :</strong> {{ job.company.name }}</p>
+      <p><strong>Lieu :</strong> {{ job.location }}</p>
+      <p>{{ job.description|truncatewords:25 }}</p>
+    </div>
+  {% empty %}
+    <p>Aucune offre disponible actuellement.</p>
+  {% endfor %}
+{% endblock %}

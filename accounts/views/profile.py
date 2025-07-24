@@ -31,6 +31,13 @@ def profile_view(request):
 def edit_profile_view(request):
     user = request.user
     form = UserUpdateForm(request.POST or None, request.FILES or None, instance=user)
+
+    # Appliquer les classes Tailwind aux champs du formulaire
+    for field in form.fields.values():
+        field.widget.attrs.update({
+            'class': 'w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring focus:border-blue-300'
+        })
+
     skills = Skill.objects.all()
     languages = Language.objects.all()
 
@@ -47,13 +54,12 @@ def edit_profile_view(request):
 
         selected_languages = request.POST.getlist("languages")
 
-        existing_language_ids = [int(lang_id) for lang_id in selected_languages]
         UserLanguage.objects.filter(user=user).exclude(language_id__in=selected_languages).delete()
 
         for lang_id in selected_languages:
             level = request.POST.get(f"level_{lang_id}")
             if not level:
-                continue  # Langue cochée mais pas de niveau, on ignore (ou tu peux afficher un message)
+                continue
             
             lang = Language.objects.filter(id=lang_id).first()
             if not lang:
@@ -67,15 +73,11 @@ def edit_profile_view(request):
 
         return redirect('profile')
 
-    LANGUAGE_LEVELS = ["Débutant", "Intermédiaire", "Avancé", "Bilingue"]
-
     user_languages = user.user_languages.all()
     language_levels_dict = {ul.language.id: ul.level for ul in user_languages}
 
-    user_language_map = {ul.language_id: ul.level for ul in user.user_languages.all()}
-
     for language in languages:
-        language.current_level = user_language_map.get(language.id)
+        language.current_level = language_levels_dict.get(language.id)
 
     return render(request, 'accounts/edit_profile.html', {
         "form": form,
@@ -86,6 +88,7 @@ def edit_profile_view(request):
         "language_levels": UserLanguage.LEVEL_CHOICES,
         "language_levels_dict": language_levels_dict,
     })
+
 
 @login_required
 def add_experience_view(request):

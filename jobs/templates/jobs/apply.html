@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block content %}
+  <h2>Postuler à l’offre : {{ job.title }}</h2>
+
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Envoyer ma candidature</button>
+  </form>
+
+  <a href="{% url 'job_detail' job.id %}">← Retour à l’annonce</a>
+{% endblock %}
