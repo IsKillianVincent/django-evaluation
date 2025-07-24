@@ -1,22 +1,23 @@
 {% extends "base.html" %}
 {% block content %}
-  <h2>Liste des entreprises</h2>
+  <div class="container">
+    <h2 class="text-xl font-bold mb-4">Liste des entreprises</h2>
 
-  {% for company in companies %}
-    <div class="company-card">
-      <h3>{{ company.name }}</h3>
-      <p>{{ company.description }}</p>
+    {% for company in companies %}
+      <section class="company-card border p-4 mb-4 rounded shadow">
+        <h3 class="text-lg font-semibold">{{ company.name }}</h3>
+        <p>{{ company.description }}</p>
 
-      {% if company.images.all %}
-        <div class="company-images">
-          {% for img in company.images.all %}
-            <img src="{{ img.image.url }}" alt="{{ img.caption }}" width="150">
-          {% endfor %}
-        </div>
-      {% endif %}
-    </div>
-    <hr>
-  {% empty %}
-    <p>Aucune entreprise enregistrée.</p>
-  {% endfor %}
+        {% if company.images.all %}
+          <div class="flex gap-2 mt-2">
+            {% for img in company.images.all %}
+              <img src="{{ img.image.url }}" alt="{{ img.caption }}" class="w-32 h-auto rounded" loading="lazy">
+            {% endfor %}
+          </div>
+        {% endif %}
+      </section>
+    {% empty %}
+      <p>Aucune entreprise enregistrée.</p>
+    {% endfor %}
+  </div>
 {% endblock %}

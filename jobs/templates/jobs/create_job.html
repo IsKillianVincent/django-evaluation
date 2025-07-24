@@ -1,12 +1,14 @@
 {% extends "base.html" %}
 {% block content %}
-  <h2>Créer une offre d’emploi</h2>
+  <div class="container">
+    <h2 class="text-xl font-bold mb-4">Créer une offre d’emploi</h2>
 
-  <form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Créer</button>
-  </form>
+    <form method="post" class="space-y-4">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit" class="btn btn-primary">Créer</button>
+    </form>
 
-  <a href="{% url 'job_list' %}">← Retour à la liste des offres</a>
+    <p class="mt-4"><a href="{% url 'job_list' %}">← Retour à la liste des offres</a></p>
+  </div>
 {% endblock %}

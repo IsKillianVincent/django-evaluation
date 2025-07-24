@@ -1,19 +1,22 @@
 {% extends "base.html" %}
 {% block content %}
-  <h2>Créer une entreprise</h2>
+  <div class="container">
+    <h2 class="text-xl font-bold mb-4">Créer une entreprise</h2>
 
-  <form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ company_form.as_p }}
+    <form method="post" enctype="multipart/form-data" class="space-y-4">
+      {% csrf_token %}
+      {{ company_form.as_p }}
 
-    <h3>Images de l’entreprise (max 5)</h3>
-    {{ formset.management_form }}
-    {% for form in formset %}
-      <div class="image-upload">
-        {{ form.as_p }}
+      <h3 class="text-lg font-semibold">Images (max 5)</h3>
+      {{ formset.management_form }}
+
+      <div class="space-y-2">
+        {% for form in formset %}
+          {{ form.as_p }}
+        {% endfor %}
       </div>
-    {% endfor %}
 
-    <button type="submit">Créer l’entreprise</button>
-  </form>
+      <button type="submit" class="btn btn-primary">Créer l’entreprise</button>
+    </form>
+  </div>
 {% endblock %}

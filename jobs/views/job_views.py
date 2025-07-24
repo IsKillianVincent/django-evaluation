@@ -1,39 +1,50 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.admin.views.decorators import staff_member_required
-from django.contrib.auth.decorators import login_required,  user_passes_test
+from django.views.generic import ListView, DetailView, CreateView
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.shortcuts import redirect
 from django.contrib import messages
+
 from jobs.models import Job, Company
-from jobs.forms.job_form import JobForm
+from jobs.forms import JobForm
 
-def job_list(request):
-    jobs = Job.objects.filter(is_filled=False).order_by("-created_at")
-    return render(request, "jobs/job_list.html", {"jobs": jobs})
+class JobListView(ListView):
+    model = Job
+    template_name = "jobs/job_list.html"
+    context_object_name = "jobs"
 
+    def get_queryset(self):
+        return Job.objects.filter(is_filled=False).order_by("-created_at")
 
-def job_detail(request, pk):
-    job = get_object_or_404(Job, pk=pk)
-    return render(request, "jobs/job_detail.html", {"job": job})
+class JobDetailView(DetailView):
+    model = Job
+    template_name = "jobs/job_detail.html"
+    context_object_name = "job"
 
-@login_required
-@user_passes_test(lambda u: u.is_employer)
-def create_job_view(request):
-    companies = Company.objects.owned_by(request.user)
-    if not companies.exists():
-        messages.warning(request, "Vous devez d'abord créer une entreprise avant de pouvoir publier une offre.")
-        return redirect("create_company")
+class CreateJobView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
+    model = Job
+    form_class = JobForm
+    template_name = "jobs/create_job.html"
 
-    if request.method == "POST":
-        form = JobForm(request.POST)
-        if form.is_valid():
-            job = form.save(commit=False)
-            if job.company.owner != request.user:
-                messages.error(request, "Vous ne pouvez publier une offre que pour vos propres entreprises.")
-                return redirect("dashboard")
-            job.save()
-            messages.success(request, "Offre publiée avec succès.")
-            return redirect("job_list")
-    else:
-        form = JobForm()
+    def test_func(self):
+        return self.request.user.is_employer
 
-    form.fields["company"].queryset = companies
-    return render(request, "jobs/create_job.html", {"form": form})
+    def dispatch(self, request, *args, **kwargs):
+        companies = Company.objects.owned_by(request.user)
+        if not companies.exists():
+            messages.warning(request, "Vous devez d’abord créer une entreprise.")
+            return redirect("create_company")
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        form.fields["company"].queryset = Company.objects.owned_by(self.request.user)
+        return form
+
+    def form_valid(self, form):
+        if form.instance.company.owner != self.request.user:
+            messages.error(self.request, "Vous ne pouvez publier que pour vos entreprises.")
+            return redirect("dashboard")
+        messages.success(self.request, "Offre créée avec succès.")
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return self.request.GET.get("next") or "/jobs/"

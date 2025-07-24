@@ -1,35 +1,58 @@
 {% extends "base.html" %}
 {% block content %}
-  <h2>Dashboard Employeur</h2>
+  <div class="container">
+    <h2 class="text-xl font-bold mb-4">Dashboard Employeur</h2>
 
-  {% if user.is_employer %}
-  {% if user.companies.exists %}
-    <a href="{% url 'create_job' %}">Crée une offre</a>
-  {% else %}
-    <a href="{% url 'create_company' %}">Crée votre entreprise pour publier des offres</a>
-  {% endif %}
-{% endif %}
+    {% if user.is_employer %}
+      {% if user.companies.exists %}
+        <a href="{% url 'create_job' %}" class="btn btn-secondary">Créer une offre</a>
+      {% else %}
+        <a href="{% url 'create_company' %}" class="btn btn-secondary">Créer votre entreprise</a>
+      {% endif %}
+    {% endif %}
 
-  {% if applications %}
-    {% for app in applications %}
-      <div class="application-entry">
-        <h3>{{ app.user.get_full_name }} a postulé à <em>{{ app.job.title }}</em></h3>
-        <p><strong>Date :</strong> {{ app.created_at|date:"d/m/Y H:i" }}</p>
-        <p><strong>Lettre de motivation :</strong><br>{{ app.cover_letter|linebreaks }}</p>
-        <p><strong>CV :</strong> <a href="{{ app.resume.url }}" target="_blank">Télécharger</a></p>
-        <p><strong>Statut :</strong> {{ app.is_validated|yesno:"Validée,En attente" }}</p>
+    {% if applications %}
+      <div class="space-y-6 mt-6">
+        {% for app in applications %}
+          <article class="application-entry border p-4 rounded shadow">
+            <h3 class="font-semibold">{{ app.user.get_full_name }} a postulé à <em>{{ app.job.title }}</em></h3>
+            <p class="text-sm text-gray-500">Posté le {{ app.created_at|date:"d/m/Y H:i" }}</p>
+            <p><strong>Lettre :</strong><br>{{ app.cover_letter|linebreaks }}</p>
+            <p><strong>CV :</strong> <a href="{{ app.resume.url }}" target="_blank" class="underline">Télécharger</a></p>
+            <p><strong>Statut :</strong> {{ app.is_validated|yesno:"Validée,En attente" }}</p>
+
+            <div class="mt-2 space-x-2">
+              {% if app.is_validated %}
+                <a href="{% url 'invalidate_application' app.id %}" class="btn btn-warning">Invalider</a>
+              {% else %}
+                <a href="{% url 'validate_application' app.id %}" class="btn btn-success">Valider</a>
+              {% endif %}
+            </div>
+
+            <div class="mt-4">
+              <h4 class="font-semibold">Compétences</h4>
+              <ul class="list-disc list-inside">
+                {% for skill in app.user.skills.all %}
+                  <li>{{ skill.name }}</li>
+                {% empty %}
+                  <li>Aucune compétence renseignée.</li>
+                {% endfor %}
+              </ul>
+
+              <h4 class="font-semibold mt-2">Langues</h4>
+              <ul class="list-disc list-inside">
+                {% for lang in app.user.languages.all %}
+                  <li>{{ lang.name }} ({{ lang.level }})</li>
+                {% empty %}
+                  <li>Non spécifiées.</li>
+                {% endfor %}
+              </ul>
+            </div>
+          </article>
+        {% endfor %}
       </div>
-      <hr>
-    {% if app.is_validated %}
-        Validée
-        <a href="{% url 'invalidate_application' app.id %}" class="btn btn-sm btn-warning">Invalider</a>
     {% else %}
-        En attente
-        <a href="{% url 'validate_application' app.id %}" class="btn btn-sm btn-success">Valider</a>
-  {% endif %}
-</p>
-    {% endfor %}
-  {% else %}
-    <p>Aucune candidature reçue pour l’instant.</p>
-  {% endif %}
+      <p class="mt-4">Aucune candidature reçue pour l’instant.</p>
+    {% endif %}
+  </div>
 {% endblock %}

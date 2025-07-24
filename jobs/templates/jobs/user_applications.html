@@ -1,22 +1,22 @@
 {% extends "base.html" %}
-
 {% block content %}
-  <h2>Mes candidatures</h2>
+  <div class="container">
+    <h2 class="text-xl font-bold mb-4">Mes candidatures</h2>
 
-  {% if applications %}
-    <ul>
-      {% for app in applications %}
-        <li>
-          <strong>{{ app.job.title }}</strong> chez {{ app.job.company.name }}<br>
-          <em>Date :</em> {{ app.created_at|date:"d/m/Y H:i" }}<br>
-          <em>Statut :</em> {{ app.is_validated|yesno:"Validée,En attente" }}<br>
-          <em>Lettre :</em> {{ app.cover_letter|truncatewords:20 }}<br>
-          <em>CV :</em> <a href="{{ app.resume.url }}" target="_blank">Télécharger</a>
-        </li>
-        <hr>
-      {% endfor %}
-    </ul>
-  {% else %}
-    <p>Vous n'avez pas encore déposé de candidature.</p>
-  {% endif %}
+    {% if applications %}
+      <ul class="space-y-4">
+        {% for app in applications %}
+          <li class="border p-4 rounded shadow">
+            <p><strong>{{ app.job.title }}</strong> chez {{ app.job.company.name }}</p>
+            <p><em>Date :</em> {{ app.created_at|date:"d/m/Y H:i" }}</p>
+            <p><em>Statut :</em> {{ app.is_validated|yesno:"Validée,En attente" }}</p>
+            <p><em>Lettre :</em> {{ app.cover_letter|truncatewords:20 }}</p>
+            <p><em>CV :</em> <a href="{{ app.resume.url }}" target="_blank" class="underline">Télécharger</a></p>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p>Vous n'avez pas encore déposé de candidature.</p>
+    {% endif %}
+  </div>
 {% endblock %}
