@@ -1,0 +1,4 @@
+user__username,job__title,cover_letter,is_validated
+KIVIN,Mendix dev,"Agile",True
+KIVIN,Mendix dev,"Python et Django.",False
+KIVIN,Mendix dev,"SQL",False

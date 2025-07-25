@@ -4,6 +4,7 @@ from jobs.views.application_views import SubmitApplicationView, UserApplications
 from jobs.views.employer_views import EmployerDashboardView, ValidateApplicationView, InvalidateApplicationView
 from jobs.views.company_views import company_list_view, create_company_view, update_company_view
 from jobs.views.api import applications_today_csv
+from jobs.views.notification_views import notification_list_view, mark_notification_as_read_view, unread_notification_count
 
 urlpatterns = [
     path("", JobListView.as_view(), name="job_list"),
@@ -21,4 +22,9 @@ urlpatterns = [
     path("company/<int:pk>/edit/", update_company_view, name="update_company"),
 
     path("export/applications-today/", applications_today_csv, name="applications_today_csv"),
+
+    path("notifications/", notification_list_view, name="notification_list"),
+    path("notifications/<int:pk>/read/", mark_notification_as_read_view, name="mark_notification_read"),
+    path("api/notifications/unread_count/", unread_notification_count, name="unread_notifications"),
+
 ]

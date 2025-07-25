@@ -21,7 +21,6 @@ def create_company_view(request):
             company.owner = request.user
             company.save()
 
-            # Traitement des images (max 5)
             images = request.FILES.getlist('images')
             for img in images[:5]:
                 CompanyImage.objects.create(company=company, image=img)

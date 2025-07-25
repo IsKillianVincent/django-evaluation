@@ -1,11 +1,77 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
   <meta charset="UTF-8" />
   <title>{% block title %}We Are Hiring{% endblock %}</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
+
 <body class="bg-gray-100 text-gray-800">
+  <script>
+    function getCookie(name) {
+      let cookieValue = null;
+      if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+          const cookie = cookies[i].trim();
+          if (cookie.substring(0, name.length + 1) === (name + '=')) {
+            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+            break;
+          }
+        }
+      }
+      return cookieValue;
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const csrfToken = getCookie('csrftoken');
+
+      fetch("{% url 'unread_notifications' %}")
+        .then(response => response.json())
+        .then(data => {
+          const notifBadge = document.getElementById("notif-badge");
+          if (data.unread_count > 0) {
+            notifBadge.textContent = data.unread_count;
+            notifBadge.classList.remove("hidden");
+          } else {
+            notifBadge.classList.add("hidden");
+          }
+        });
+
+      document.querySelectorAll(".mark-read").forEach(link => {
+        link.addEventListener("click", e => {
+          e.preventDefault();
+          const notifId = link.dataset.id;
+
+          fetch(`/jobs/notifications/${notifId}/read/`, {
+            method: "POST",
+            headers: {
+              "X-CSRFToken": csrfToken,
+            },
+          }).then(response => {
+            if (response.ok) {
+              link.closest("li").querySelector("p").classList.remove("font-semibold");
+              link.remove();
+
+              fetch("{% url 'unread_notifications' %}")
+                .then(response => response.json())
+                .then(data => {
+                  const notifBadge = document.getElementById("notif-badge");
+                  if (data.unread_count > 0) {
+                    notifBadge.textContent = data.unread_count;
+                    notifBadge.classList.remove("hidden");
+                  } else {
+                    notifBadge.classList.add("hidden");
+                  }
+                });
+            }
+          });
+        });
+      });
+    });
+  </script>
+
   <nav class="bg-white shadow mb-6">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex justify-between h-16">
@@ -15,34 +81,56 @@
           </a>
           <div class="hidden sm:-my-px sm:ml-10 sm:flex sm:space-x-8">
             {% if request.user.is_authenticated %}
-              {% if request.user.is_employer %}
-                <a href="{% url 'employer_dashboard' %}" class="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium hover:text-emerald-600">
-                  Dashboard
-                </a>
-                <a href="{% url 'create_job' %}" class="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium hover:text-emerald-600">
-                  Nouvelle Offre
-                </a>
-              {% else %}
-                <a href="{% url 'job_list' %}" class="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium hover:text-emerald-600">
-                  Offres
-                </a>
-                <a href="{% url 'user_applications' %}" class="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium hover:text-emerald-600">
-                  Mes candidatures
-                </a>
-              {% endif %}
-              <a href="{% url 'profile' %}" class="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium hover:text-emerald-600">
-                Mon profil
-              </a>
-              <a href="{% url 'logout' %}" class="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium hover:text-red-600">
-                Déconnexion
-              </a>
+            {% if request.user.is_employer %}
+            <a href="{% url 'employer_dashboard' %}"
+              class="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium hover:text-emerald-600">
+              Dashboard
+            </a>
+            <a href="{% url 'create_job' %}"
+              class="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium hover:text-emerald-600">
+              Nouvelle Offre
+            </a>
+            <a href="{% url 'company_list' %}"
+              class="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium hover:text-emerald-600">
+              Entreprises
+            </a>
+            <a href="{% url 'notification_list' %}" id="notif-icon"
+              class="relative inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium hover:text-emerald-600">
+              Notification
+              <span id="notif-badge"
+                class="hidden absolute top-3 -right-2 bg-emerald-600 text-white text-xs font-bold px-1.5 py-0.5 rounded-full shadow-md">
+              </span>
+            </a>
+
+
             {% else %}
-              <a href="{% url 'login' %}" class="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium hover:text-emerald-600">
-                Connexion
-              </a>
-              <a href="{% url 'register' %}" class="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium hover:text-emerald-600">
-                Inscription
-              </a>
+            <a href="{% url 'job_list' %}"
+              class="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium hover:text-emerald-600">
+              Offres
+            </a>
+            <a href="{% url 'user_applications' %}"
+              class="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium hover:text-emerald-600">
+              Mes candidatures
+            </a>
+            {% endif %}
+            <a href="{% url 'profile' %}"
+              class="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium hover:text-emerald-600">
+              Mon profil
+            </a>
+
+            <a href="{% url 'logout' %}"
+              class="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium hover:text-red-600">
+              Déconnexion
+            </a>
+            {% else %}
+            <a href="{% url 'login' %}"
+              class="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium hover:text-emerald-600">
+              Connexion
+            </a>
+            <a href="{% url 'register' %}"
+              class="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium hover:text-emerald-600">
+              Inscription
+            </a>
             {% endif %}
           </div>
         </div>
@@ -51,11 +139,12 @@
   </nav>
   <div class="max-w-3xl mx-auto px-4">
     {% if messages %}
-      {% for message in messages %}
-        <div class="mb-4 p-4 rounded border {{ message.tags|yesno:'border-green-400 bg-green-100,border-red-400 bg-red-100' }}">
-          <p class="text-sm text-gray-700">{{ message }}</p>
-        </div>
-      {% endfor %}
+    {% for message in messages %}
+    <div
+      class="mb-4 p-4 rounded border {{ message.tags|yesno:'border-green-400 bg-green-100,border-red-400 bg-red-100' }}">
+      <p class="text-sm text-gray-700">{{ message }}</p>
+    </div>
+    {% endfor %}
     {% endif %}
   </div>
   <main class="max-w-5xl mx-auto px-4">
@@ -63,4 +152,5 @@
   </main>
 
 </body>
+
 </html>

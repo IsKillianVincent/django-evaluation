@@ -5,5 +5,11 @@
   {% csrf_token %}
   {{ form.as_p }}
   <button type="submit" class="bg-emerald-600 text-white px-4 py-2 rounded hover:bg-emerald-700">Se connecter</button>
+  
 </form>
+<div class="mt-4">
+    <a href="{% url 'password_change' %}" class="inline-block text-emerald-600 hover:underline">
+      Mot de passe oublié ?
+    </a>
+  </div>
 {% endblock %}

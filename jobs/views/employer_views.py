@@ -12,9 +12,7 @@ class EmployerDashboardView(EmployerRequiredMixin, View):
     def get(self, request):
         apps = Application.objects.filter(
     job__company__owner=request.user
-).select_related("job", "job__company", "user").prefetch_related(
-    "user__skills", "user__languages"
-)
+).select_related("job", "job__company", "user")
         return render(request, "jobs/employer_dashboard.html", {"applications": apps})
 
 class ValidateApplicationView(EmployerRequiredMixin, View):
