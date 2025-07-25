@@ -1,0 +1,61 @@
+# We Are Hiring
+
+Plateforme Django de gestion d'offres d'emploi.
+
+---
+
+## Fonctionnalités
+
+- Authentification utilisateur
+- Création et modification d'entreprise
+- Ajout & postulation à des offres d'emploi
+- Notifications
+- Upload d’images (jusqu’à 5) par entreprise
+- Export CSV des candidatures du jour
+
+---
+
+## Technologies
+
+- Python 3.12
+- Django 5+
+- PostgreSQL 15
+- TailwindCSS
+- Docker & Docker Compose
+
+---
+
+## Lancement du projet
+
+### 1. Prérequis
+
+- [Docker](https://www.docker.com/products/docker-desktop)
+- [Docker Compose](https://docs.docker.com/compose/)
+
+---
+
+### 2. Cloner le projet
+
+```bash
+git clone https://github.com/IsKillianVincent/django-evaluation.git
+cd evaluation
+```
+
+### 3. Faire le .env
+
+```bash
+voir .env-example
+```
+
+### 4. Lancer le projet avec Docker
+```bash
+docker-compose up --build
+```
+
+### 5. Faire le superuser
+```bash
+docker-compose exec web python manage.py createsuperuser
+```
+
+### 6. Naviguer
+http://localhost:8000
