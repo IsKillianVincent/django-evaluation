@@ -1,14 +1,32 @@
 {% extends "base.html" %}
 {% block content %}
-  <div class="container">
-    <h2 class="text-xl font-bold mb-4">Créer une offre d’emploi</h2>
+  <div class="max-w-2xl mx-auto px-4 py-6 bg-white rounded shadow">
+    <h2 class="text-2xl font-bold mb-6 text-gray-800">Créer une offre d’emploi</h2>
 
-    <form method="post" class="space-y-4">
+    <form method="post" class="space-y-5">
       {% csrf_token %}
-      {{ form.as_p }}
-      <button type="submit" class="btn btn-primary">Créer</button>
+
+      {% for field in form %}
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">{{ field.label }}</label>
+          {{ field.errors }}
+          {{ field }}
+          {% if field.help_text %}
+            <p class="text-xs text-gray-500 mt-1">{{ field.help_text }}</p>
+          {% endif %}
+        </div>
+      {% endfor %}
+
+      <button type="submit"
+              class="bg-emerald-600 text-white px-4 py-2 rounded hover:bg-emerald-700 transition">
+        Créer l'offre
+      </button>
     </form>
 
-    <p class="mt-4"><a href="{% url 'job_list' %}">← Retour à la liste des offres</a></p>
+    <div class="mt-6">
+      <a href="{% url 'job_list' %}" class="text-sm text-emerald-600 hover:underline">
+        ← Retour à la liste des offres
+      </a>
+    </div>
   </div>
 {% endblock %}

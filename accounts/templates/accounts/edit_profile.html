@@ -33,7 +33,7 @@
       <div class="grid grid-cols-2 md:grid-cols-3 gap-2">
         {% for skill in skills %}
           <label class="flex items-center space-x-2">
-            <input type="checkbox" name="skills" value="{{ skill.id }}" class="rounded text-blue-600"
+            <input type="checkbox" name="skills" value="{{ skill.id }}" class="rounded text-emerald-600"
                    {% if skill.id in user_skill_ids %}checked{% endif %}>
             <span>{{ skill.name }}</span>
           </label>
@@ -47,12 +47,12 @@
         {% for language in languages %}
           <div class="flex items-center gap-4">
             <label class="flex items-center space-x-2">
-              <input type="checkbox" name="languages" value="{{ language.id }}" class="rounded text-blue-600"
+              <input type="checkbox" name="languages" value="{{ language.id }}" class="rounded text-emerald-600"
                      {% if language.current_level %}checked{% endif %}>
               <span>{{ language.name }}</span>
             </label>
             <select name="level_{{ language.id }}"
-                    class="block w-full max-w-xs border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                    class="block w-full max-w-xs border-gray-300 rounded-md shadow-sm focus:ring-emerald-500 focus:border-emerald-500">
               <option value="">-- Niveau --</option>
               {% for code, label in language_levels %}
                 <option value="{{ code }}" {% if language.current_level == code %}selected{% endif %}>
@@ -68,7 +68,7 @@
     <div>
       <div class="flex items-center justify-between mb-2">
         <h3 class="text-lg font-medium text-gray-800">Expériences</h3>
-        <a href="{% url 'add_experience' %}" class="text-blue-600 hover:underline">+ Ajouter</a>
+        <a href="{% url 'add_experience' %}" class="text-emerald-600 hover:underline">+ Ajouter</a>
       </div>
       <ul class="space-y-4">
         {% for exp in request.user.experiences.all %}
@@ -93,7 +93,7 @@
     </div>
 
     <div class="pt-4">
-      <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded shadow">
+      <button type="submit" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded shadow">
         Enregistrer les modifications
       </button>
     </div>

@@ -1,14 +1,50 @@
 {% extends "base.html" %}
 {% block content %}
-  <div class="container">
-    <h2 class="text-xl font-bold mb-4">Postuler à : {{ job.title }}</h2>
+  <div class="max-w-2xl mx-auto px-4 py-6 bg-white shadow rounded">
+    <h2 class="text-2xl font-bold text-gray-800 mb-6">
+      Postuler à : <span class="text-emerald-600">{{ job.title }}</span>
+    </h2>
 
-    <form method="post" enctype="multipart/form-data" class="space-y-4">
+    <form method="post" enctype="multipart/form-data" class="space-y-5">
       {% csrf_token %}
-      {{ form.as_p }}
-      <button type="submit" class="btn btn-primary">Envoyer ma candidature</button>
+      {% for field in form %}
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">
+            {{ field.label }}
+          </label>
+          
+          {{ field.errors }}
+
+          {% if field.widget_type == "textarea" %}
+            <textarea name="{{ field.html_name }}"
+                      class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:border-emerald-400"
+                      {% if field.field.required %} required {% endif %}>{{ field.value }}</textarea>
+          {% elif field.widget_type == "clearablefileinput" %}
+            {{ field }}
+          {% else %}
+            <input type="{{ field.field.widget.input_type }}"
+                   name="{{ field.html_name }}"
+                   value="{{ field.value|stringformat:'s' }}"
+                   class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:border-emerald-400"
+                   {% if field.field.required %} required {% endif %}>
+          {% endif %}
+
+          {% if field.help_text %}
+            <p class="text-xs text-gray-500 mt-1">{{ field.help_text }}</p>
+          {% endif %}
+        </div>
+      {% endfor %}
+
+      <button type="submit"
+              class="bg-emerald-600 text-white px-4 py-2 rounded hover:bg-emerald-700 transition">
+        Envoyer ma candidature
+      </button>
     </form>
 
-    <p class="mt-4"><a href="{% url 'job_detail' job.id %}">← Retour à l’annonce</a></p>
+    <div class="mt-6">
+      <a href="{% url 'job_detail' job.id %}" class="text-sm text-emerald-600 hover:underline">
+        ← Retour à l’annonce
+      </a>
+    </div>
   </div>
 {% endblock %}

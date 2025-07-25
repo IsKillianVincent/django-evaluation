@@ -11,3 +11,4 @@ class CompanyImage(models.Model):
 
     def __str__(self):
         return f"Image for {self.company.name}"
+ 

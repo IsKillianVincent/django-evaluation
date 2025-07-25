@@ -2,8 +2,9 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.forms import modelformset_factory
 from django.contrib import messages
-from jobs.forms.company_form import CompanyForm, CompanyImageForm
+from jobs.forms.company_form import CompanyForm, CompanyImagesUploadForm
 from jobs.models import Company, CompanyImage
+from django.shortcuts import get_object_or_404
 
 @login_required
 def create_company_view(request):
@@ -11,37 +12,58 @@ def create_company_view(request):
         messages.error(request, "Seuls les super utilisateurs peuvent créer une entreprise.")
         return redirect("dashboard")
 
-    ImageFormSet = modelformset_factory(CompanyImage, form=CompanyImageForm, extra=3, max_num=5, can_delete=False)
-
     if request.method == "POST":
         company_form = CompanyForm(request.POST)
-        formset = ImageFormSet(request.POST, request.FILES, queryset=CompanyImage.objects.none())
+        image_form = CompanyImagesUploadForm(request.POST, request.FILES)
 
-        if company_form.is_valid() and formset.is_valid():
+        if company_form.is_valid() and image_form.is_valid():
             company = company_form.save(commit=False)
             company.owner = request.user
             company.save()
 
-            for form in formset.cleaned_data:
-                if form and form.get("image"):
-                    CompanyImage.objects.create(
-                        company=company,
-                        image=form["image"],
-                        caption=form.get("caption", "")
-                    )
+            # Traitement des images (max 5)
+            images = request.FILES.getlist('images')
+            for img in images[:5]:
+                CompanyImage.objects.create(company=company, image=img)
 
             messages.success(request, "Entreprise créée avec succès.")
             return redirect("company_list")
     else:
         company_form = CompanyForm()
-        formset = ImageFormSet(queryset=CompanyImage.objects.none())
+        image_form = CompanyImagesUploadForm()
 
     return render(request, "jobs/create_company.html", {
         "company_form": company_form,
-        "formset": formset,
+        "image_form": image_form,
     })
-
 
 def company_list_view(request):
     companies = Company.objects.prefetch_related("images").all()
     return render(request, "jobs/company_list.html", {"companies": companies})
+
+@login_required
+def update_company_view(request, pk):
+    company = get_object_or_404(Company, pk=pk, owner=request.user)
+
+    if request.method == "POST":
+        company_form = CompanyForm(request.POST, instance=company)
+        image_form = CompanyImagesUploadForm(request.POST, request.FILES)
+
+        if company_form.is_valid() and image_form.is_valid():
+            company_form.save()
+
+            new_images = request.FILES.getlist('images')
+            for img in new_images[:5]:
+                CompanyImage.objects.create(company=company, image=img)
+
+            messages.success(request, "Entreprise mise à jour avec succès.")
+            return redirect("company_list")
+    else:
+        company_form = CompanyForm(instance=company)
+        image_form = CompanyImagesUploadForm()
+
+    return render(request, "jobs/update_company.html", {
+        "company_form": company_form,
+        "image_form": image_form,
+        "company": company,
+    })

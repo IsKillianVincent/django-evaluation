@@ -36,7 +36,7 @@
       <dt class="font-medium text-gray-700">LinkedIn</dt>
       <dd>
         {% if request.user.linkedin %}
-          <a href="{{ request.user.linkedin }}" class="text-blue-600 hover:underline" target="_blank">{{ request.user.linkedin }}</a>
+          <a href="{{ request.user.linkedin }}" class="text-emerald-600 hover:underline" target="_blank">{{ request.user.linkedin }}</a>
         {% else %}
           <span class="text-gray-500">—</span>
         {% endif %}
@@ -46,7 +46,7 @@
       <dt class="font-medium text-gray-700">Site Web</dt>
       <dd>
         {% if request.user.website %}
-          <a href="{{ request.user.website }}" class="text-blue-600 hover:underline" target="_blank">{{ request.user.website }}</a>
+          <a href="{{ request.user.website }}" class="text-emerald-600 hover:underline" target="_blank">{{ request.user.website }}</a>
         {% else %}
           <span class="text-gray-500">—</span>
         {% endif %}
@@ -96,8 +96,8 @@
   </div>
 
   <div class="mt-6 flex justify-between">
-    <a href="{% url 'edit_profile' %}" class="text-blue-600 hover:underline">Modifier mon profil</a>
-    <a href="{% url 'password_change' %}" class="text-blue-600 hover:underline">Changer mon mot de passe</a>
+    <a href="{% url 'edit_profile' %}" class="text-emerald-600 hover:underline">Modifier mon profil</a>
+    <a href="{% url 'password_change' %}" class="text-emerald-600 hover:underline">Changer mon mot de passe</a>
   </div>
 </div>
 {% endblock %}

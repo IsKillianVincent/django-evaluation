@@ -29,7 +29,7 @@ class SubmitApplicationView(LoginRequiredMixin, CreateView):
         return context
 
     def get_success_url(self):
-        return "/jobs/mes-candidatures/"
+        return "/jobs/my-applications/"
 
 class UserApplicationsView(LoginRequiredMixin, ListView):
     model = Application

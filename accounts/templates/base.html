@@ -6,43 +6,41 @@
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100 text-gray-800">
-
-  <!-- Navbar -->
   <nav class="bg-white shadow mb-6">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex justify-between h-16">
         <div class="flex">
-          <a href="{% url 'dashboard' %}" class="flex-shrink-0 flex items-center text-lg font-bold text-indigo-600">
+          <a href="{% url 'dashboard' %}" class="flex-shrink-0 flex items-center text-lg font-bold text-emerald-600">
             We Are Hiring
           </a>
           <div class="hidden sm:-my-px sm:ml-10 sm:flex sm:space-x-8">
             {% if request.user.is_authenticated %}
               {% if request.user.is_employer %}
-                <a href="{% url 'employer_dashboard' %}" class="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium hover:text-indigo-600">
-                  Dashboard Employeur
+                <a href="{% url 'employer_dashboard' %}" class="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium hover:text-emerald-600">
+                  Dashboard
                 </a>
-                <a href="{% url 'create_job' %}" class="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium hover:text-indigo-600">
+                <a href="{% url 'create_job' %}" class="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium hover:text-emerald-600">
                   Nouvelle Offre
                 </a>
               {% else %}
-                <a href="{% url 'job_list' %}" class="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium hover:text-indigo-600">
+                <a href="{% url 'job_list' %}" class="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium hover:text-emerald-600">
                   Offres
                 </a>
-                <a href="{% url 'user_applications' %}" class="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium hover:text-indigo-600">
+                <a href="{% url 'user_applications' %}" class="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium hover:text-emerald-600">
                   Mes candidatures
                 </a>
               {% endif %}
-              <a href="{% url 'profile' %}" class="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium hover:text-indigo-600">
+              <a href="{% url 'profile' %}" class="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium hover:text-emerald-600">
                 Mon profil
               </a>
               <a href="{% url 'logout' %}" class="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium hover:text-red-600">
                 Déconnexion
               </a>
             {% else %}
-              <a href="{% url 'login' %}" class="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium hover:text-indigo-600">
+              <a href="{% url 'login' %}" class="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium hover:text-emerald-600">
                 Connexion
               </a>
-              <a href="{% url 'register' %}" class="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium hover:text-indigo-600">
+              <a href="{% url 'register' %}" class="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium hover:text-emerald-600">
                 Inscription
               </a>
             {% endif %}
@@ -51,8 +49,6 @@
       </div>
     </div>
   </nav>
-
-  <!-- Flash Messages -->
   <div class="max-w-3xl mx-auto px-4">
     {% if messages %}
       {% for message in messages %}
@@ -62,8 +58,6 @@
       {% endfor %}
     {% endif %}
   </div>
-
-  <!-- Main content -->
   <main class="max-w-5xl mx-auto px-4">
     {% block content %}{% endblock %}
   </main>
