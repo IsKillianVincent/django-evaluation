@@ -32,10 +32,9 @@ def edit_profile_view(request):
     user = request.user
     form = UserUpdateForm(request.POST or None, request.FILES or None, instance=user)
 
-    # Appliquer les classes Tailwind aux champs du formulaire
     for field in form.fields.values():
         field.widget.attrs.update({
-            'class': 'w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring focus:border-blue-300'
+            'class': 'w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring focus:border-emerald-300'
         })
 
     skills = Skill.objects.all()
